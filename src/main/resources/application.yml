@@ -1,0 +1,29 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      database: identity_manager
+      username: trunk_cmon
+      password: zlK0&hOF9voDRE+rO
+      host: localhost
+      port: 27017
+      autoIndexCreation: true
+    profiles:
+      active: default
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:9080/auth/realms/trunk
+        registration:
+          keycloak:
+            client-id: cia
+            client-secret: 6b3f6f8d-dbab-4828-b039-3962957e6c34
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+    com:
+      trunk: INFO
