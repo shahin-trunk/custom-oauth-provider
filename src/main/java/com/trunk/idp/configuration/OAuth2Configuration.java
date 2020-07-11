@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 
 @Configuration
@@ -13,10 +14,13 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 public class OAuth2Configuration {
 
     private final @NonNull ReactiveUserDetailsService reactiveUserDetailsService;
+    private final @NonNull ReactiveUserDetailsPasswordService reactiveUserDetailsPasswordService;
 
     @Bean
     public ReactiveAuthenticationManager reactiveAuthenticationManager() {
-        return new UserDetailsRepositoryReactiveAuthenticationManager(reactiveUserDetailsService);
+        final UserDetailsRepositoryReactiveAuthenticationManager authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(reactiveUserDetailsService);
+        authenticationManager.setUserDetailsPasswordService(reactiveUserDetailsPasswordService);
+        return authenticationManager;
     }
 
 }
