@@ -39,7 +39,7 @@ public class JwtTokenManager implements TokenManager {
     public Mono<Oauth2Token> getTokenFromAuthentication(Authentication authentication) {
         try {
             final JWTClaimsSet claimsSet = this.makeClaimsSetFromAuthentication((UsernamePasswordAuthenticationToken) authentication);
-            final SignedJWT signedJWT = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS512).keyID(rsaKey.getKeyID()).build(), claimsSet);
+            final SignedJWT signedJWT = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(rsaKey.getKeyID()).build(), claimsSet);
             signedJWT.sign(jwsSigner);
             return Mono.just(Oauth2Token.builder().accessToken(signedJWT.serialize()).build());
         } catch (Exception e) {
