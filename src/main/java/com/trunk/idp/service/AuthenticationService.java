@@ -9,6 +9,7 @@ import com.trunk.idp.document.security.UserCredential;
 import com.trunk.idp.support.StringConstants;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +37,10 @@ public class AuthenticationService {
                         : this.doUserAuthentication(webExchangeCredentialParser.clientCredential(serverWebExchange), webExchangeCredentialParser.userCredential(serverWebExchange))
                 )
                 .flatMap(tokenManager::getTokenFromAuthentication);
+    }
+
+    public Mono<JSONObject> jwkSet() {
+        return Mono.just(tokenManager.getJwkSet());
     }
 
     private Mono<Authentication> doUserAuthentication(Mono<ClientCredential> clientCredential, Mono<UserCredential> userCredential) {

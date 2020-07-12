@@ -3,6 +3,7 @@ package com.trunk.idp.component.impl;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -15,6 +16,7 @@ import com.trunk.idp.support.StringConstants;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -46,12 +48,17 @@ public class JwtTokenManager implements TokenManager {
         }
     }
 
+    @Override
+    public JSONObject getJwkSet() {
+        return new JWKSet(rsaKey.toPublicJWK()).toJSONObject();
+    }
+
     private JWTClaimsSet makeClaimsSetFromAuthentication(UsernamePasswordAuthenticationToken authentication) {
         final Object authenticationPrincipal = authentication.getPrincipal();
         final JWTClaimsSet.Builder claimSetBuilder = new JWTClaimsSet.Builder();
-        if(authenticationPrincipal instanceof Client){
+        if (authenticationPrincipal instanceof Client) {
             claimSetBuilder.subject(((Client) authenticationPrincipal).getClientId());
-        }else if(authenticationPrincipal instanceof UserDetailsEnhanced){
+        } else if (authenticationPrincipal instanceof UserDetailsEnhanced) {
             claimSetBuilder.subject(((UserDetailsEnhanced) authenticationPrincipal).identifier());
         }
 

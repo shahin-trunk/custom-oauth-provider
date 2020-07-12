@@ -25,7 +25,7 @@ public class OAuth2Configuration {
 
     @Bean
     public RSAKey rsaKey() throws Exception {
-        return new RSAKeyGenerator(15360)
+        return new RSAKeyGenerator(6144)
                 .keyID(securityProperties.jwt.key)
                 .generate();
     }
