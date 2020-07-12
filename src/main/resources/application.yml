@@ -12,14 +12,12 @@ spring:
       active: default
   security:
     oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:9080/auth/realms/trunk
-        registration:
-          keycloak:
-            client-id: cia
-            client-secret: 6b3f6f8d-dbab-4828-b039-3962957e6c34
+      jwt:
+        key: dRlSTuy9bIs3A*rot6EzIPRecLH
+        issuer: https://trunkapi.com/idp
+        audience: cia
+        organization: trunk inc.
+        expiry: 3600
 
 logging:
   level:

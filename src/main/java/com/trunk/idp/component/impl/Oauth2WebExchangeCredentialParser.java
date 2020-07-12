@@ -2,6 +2,7 @@ package com.trunk.idp.component.impl;
 
 import com.trunk.idp.component.WebExchangeCredentialParser;
 import com.trunk.idp.document.security.ClientCredential;
+import com.trunk.idp.document.security.Oauth2ContextHolder;
 import com.trunk.idp.document.security.UserCredential;
 import com.trunk.idp.support.StringConstants;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
 @Component
 public class Oauth2WebExchangeCredentialParser implements WebExchangeCredentialParser {
@@ -19,7 +21,11 @@ public class Oauth2WebExchangeCredentialParser implements WebExchangeCredentialP
     @Override
     public Mono<String> grantType(ServerWebExchange serverWebExchange) {
         return serverWebExchange.getFormData()
-                .flatMap(map -> Mono.justOrEmpty(map.getFirst(StringConstants.GRANT_TYPE)));
+                .filter(map -> map.containsKey(StringConstants.GRANT_TYPE))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new BadCredentialsException("Invalid grant type."))))
+                .flatMap(map -> Mono.justOrEmpty(map.getFirst(StringConstants.GRANT_TYPE)))
+                .filter(grantType -> Objects.equals(grantType, StringConstants.GRANT_TYPE_PASSWORD) || Objects.equals(grantType,StringConstants.GRANT_TYPE_CLIENT_CREDENTIALS))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new BadCredentialsException("Invalid grant type."))));
     }
 
     @Override
@@ -29,7 +35,7 @@ public class Oauth2WebExchangeCredentialParser implements WebExchangeCredentialP
                 .getHeaders()
                 .getFirst(HttpHeaders.AUTHORIZATION))
                 .filter(auth -> auth != null && auth.toLowerCase().startsWith(StringConstants.BASIC))
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new BadCredentialsException("Invalid Credentials"))))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new BadCredentialsException("Invalid client credentials."))))
                 .flatMap(this::makeClientCredential);
     }
 
@@ -46,6 +52,10 @@ public class Oauth2WebExchangeCredentialParser implements WebExchangeCredentialP
     @Override
     public Mono<UserCredential> userCredential(ServerWebExchange serverWebExchange) {
         return serverWebExchange.getFormData()
+                .filter(map -> Objects.equals(map.getFirst(StringConstants.GRANT_TYPE), StringConstants.GRANT_TYPE_PASSWORD))
+                .switchIfEmpty(Mono.defer(Mono::empty))
+                .filter(map -> map.containsKey(StringConstants.USERNAME) && map.containsKey(StringConstants.PASSWORD))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new BadCredentialsException("Invalid user credentials."))))
                 .flatMap(map -> Mono.just(UserCredential.builder()
                         .username(map.getFirst(StringConstants.USERNAME))
                         .password(map.getFirst(StringConstants.PASSWORD))

@@ -2,6 +2,7 @@ package com.trunk.idp.document.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.lang.NonNull;
+import com.trunk.idp.component.UserDetailsEnhanced;
 import com.trunk.idp.support.StringConstants;
 import com.trunk.idp.document.security.UserRole;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document
-public class User implements UserDetails, CredentialsContainer {
+public class User implements UserDetailsEnhanced, CredentialsContainer {
 
     @Id
     private String userId;
@@ -90,5 +91,10 @@ public class User implements UserDetails, CredentialsContainer {
     @Override
     public void eraseCredentials() {
         setPassword(StringConstants.BLANK);
+    }
+
+    @Override
+    public String identifier() {
+        return this.getUserId();
     }
 }
