@@ -11,6 +11,7 @@ import com.trunk.idp.component.UserDetailsEnhanced;
 import com.trunk.idp.document.persistence.Client;
 import com.trunk.idp.document.security.Oauth2Token;
 import com.trunk.idp.properties.SecurityProperties;
+import com.trunk.idp.support.StringConstants;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,7 @@ public class JwtTokenManager implements TokenManager {
         claimSetBuilder.jwtID(UUID.randomUUID().toString());
         claimSetBuilder.expirationTime(this.getTokenExpiry());
         claimSetBuilder.audience(securityProperties.jwt.audience);
-        claimSetBuilder.claim("org", securityProperties.jwt.organization);
+        claimSetBuilder.claim(StringConstants.ORG, securityProperties.jwt.organization);
         claimSetBuilder.notBeforeTime(issueTime);
 
         return claimSetBuilder.build();
