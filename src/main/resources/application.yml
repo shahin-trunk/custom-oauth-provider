@@ -22,6 +22,6 @@ spring:
 logging:
   level:
     org:
-      springframework: DEBUG
+      springframework: INFO
     com:
       trunk: INFO
