@@ -5,7 +5,7 @@ spring:
       database: identity_manager
       username: trunk_cmon
       password: zlK0&hOF9voDRE+rO
-      host: localhost
+      host: mongo
       port: 27017
       autoIndexCreation: true
     profiles:
