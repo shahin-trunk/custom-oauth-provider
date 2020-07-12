@@ -11,4 +11,5 @@ public class StringConstants {
     public static final String GRANT_TYPE_PASSWORD = "password";
     public static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
     public static final String ORG = "org";
+    public static final String BEARER = "bearer";
 }

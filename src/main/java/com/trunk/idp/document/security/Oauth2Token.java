@@ -13,4 +13,7 @@ import lombok.NoArgsConstructor;
 public class Oauth2Token {
     @JsonProperty("access_token")
     private String accessToken;
+
+    @JsonProperty("token_type")
+    private String tokenType;
 }

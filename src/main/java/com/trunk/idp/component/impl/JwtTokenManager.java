@@ -41,7 +41,7 @@ public class JwtTokenManager implements TokenManager {
             final JWTClaimsSet claimsSet = this.makeClaimsSetFromAuthentication((UsernamePasswordAuthenticationToken) authentication);
             final SignedJWT signedJWT = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(rsaKey.getKeyID()).build(), claimsSet);
             signedJWT.sign(jwsSigner);
-            return Mono.just(Oauth2Token.builder().accessToken(signedJWT.serialize()).build());
+            return Mono.just(Oauth2Token.builder().accessToken(signedJWT.serialize()).tokenType(StringConstants.BEARER).build());
         } catch (Exception e) {
             log.error("Failed to generate JWT token", e);
             return Mono.error(e);
