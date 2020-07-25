@@ -18,5 +18,6 @@ public class SecurityProperties {
         public String audience;
         public String organization;
         public Integer expiry;
+        public Integer expiryBuffer;
     }
 }

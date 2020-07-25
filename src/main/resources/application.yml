@@ -18,6 +18,7 @@ spring:
         audience: cia
         organization: trunk inc.
         expiry: 3600
+        expiry-buffer: 3420
 
 logging:
   level:
